@@ -1,0 +1,191 @@
+PVH TEST SOLUTION
+=====================================================
+PYTHON
+# A.   If Category contains 'Accessories',  then make Business = 'DFG'
+
+df.loc[df.Category == 'Accessories', 'Business'] = 'DFG'
+df
+
+# B.   If Gender = 'Children' and Division = 'CK', then make  Business = 'CK-KIDS'
+
+df.loc[(df.Gender == 'Children') & (df.Division == 'CK'), 'Business'] = 'CK-KIDS'
+df
+
+------------------------------------------------------------------------------------------------
+# A.   Read the dataset into R or Python. Assume its in a file named Cust_Sales.csv		
+df = pd.read_csv('Cust_Sales.csv')
+df.head(5)
+	
+# B.   Treat NULLs and Blanks in Birth_Date column
+df.isnull().sum()
+
+print(df.replace(r'^\s*$', np.nan, regex=True))	
+df["Birth_Date"] = df["Birth_Date"].replace('#NA', np.nan)
+
+df['Birth_Date'].fillna(method = 'bfill', inplace = True)
+df
+
+C.   Filter out(ie; Delete) records for X29 Store 	
+
+df.drop([10009],axis=0,inplace = True)
+df
+					
+D.   Aggregate the data at a Store Category Level.						
+
+df.groupby(['Store','Category']).sum()
+df
+===========================================================================
+
+SQL
+
+
+-1)-From the below Sales_Emp and Sales_Trans tables can you create a table with ID, Name and Net Sales of all Employees. If an Employee doesn’t as a sales record in Sales_Trans, consider the sales amount to be 0.
+
+SELECT sales_emp.sales_id, sales_emp.sales_name, NVL(SUM(sales_trans.sales_amount),'0') as net_sales
+FROM sales_emp 
+LEFT JOIN sales_trans
+ON sales_emp.sales_id = sales_trans.sales_id
+GROUP BY sales_emp.sales_id;
+
+--Q2) Categorize the Employees as Star Performer based on their Net Sales. An Employee is given StarPerformer if the Net Sales of that Employee is >35% of Total Sales amount of all empoyees
+
+SELECT sales_emp.sales_id, sales_emp.sales_name, NVL(SUM(sales_trans.sales_amount),'0') > 0.35 * (select sum(sales_amount) from sales_trans) as pct_total_sales
+CASE 
+WHEN (NVL(SUM(sales_trans.sales_amount),'0') > 0.35 *(select sum(sales_amount)from sales_trans)) THEN 'STAR'
+ELSE 'NO'
+END AS 'Reward'
+FROM sales_emp 
+LEFT JOIN sales_trans
+ON sales_emp.sales_id = sales_trans.sales_id
+GROUP BY sales_emp.sales_id;
+
+--Q3) From the below Sample table Display a report showing each student’s Marks in individual subjects and the highest Marks scored by any student in those subjects
+
+select stu_id, stu_name, course_id, marks, max(marks) over(partition by course_id order by course_id) as highest
+from school;
+
+-4)--In the below Order_Pdt table, write a query to indentify the Orders which were made for both Product IDs 10 and 12. 
+SELECT DISTINCT orderid FROM order_pdt WHERE pdtid IN(10,12) group by orderid having count(orderid) > 1;
+
+Q5) Refer to Sample table below. It’s a sample of one year of PO data. Explore and analyze the data and tell if the data has sufficient information to solve the problem statement.
+Write a SQL code to report Yearly aggregated Order Qty  and $ values by Vendor/Product/Division/Shipping Country (as shown in Expected result)
+ans--Table has not sufficient information to solve this problem, such as shipment_country  'mexico' does not present in table and we have to convert currency into USD , table does not contain enough data
+
+--Q6) From the below Students table, find out the Students who scored the Max marks in each Course 
+
+SELECT course_id, stu_id, stu_name, marks
+FROM(
+  SELECT e.*, ROW_NUMBER() OVER(PARTITION BY course_id order by stu_id desc) as rn
+    FROM school e
+   )X
+WHERE X.rn = 1;
+
+--Q7) Refer to the Sample table below.  Write an SQL code to separate the Orders and Forecasts into columns from rows
+select * from (
+   select channel,
+          sku,date,f,o
+   from table
+             )
+pivot 
+(
+   LISTAGG(date) within group (order by sku)
+   for fct_qty in
+   ('fct_qty' as f,
+    'fct_qty' as o,
+    )
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
