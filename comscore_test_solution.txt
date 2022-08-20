@@ -1,0 +1,124 @@
+
+COMSCORE_TEST_SOLUTION
+==========================================================================================================================
+--1.If you had a table with the following data, [ person_id PK bigint, country varchar, gender int, age int, revenue numeric(6,2)], please show how you would do the following with SQL:
+
+--a.Rank each country based on number of people
+SELECT  person_id, country, gender, age, revenue, RANK() OVER(PARTITION BY country ORDER BY person_id) as rank from table;
+------------------------------ OR --------------------------------------------------------------------------------------------------------------------------
+Select row_number (1,1) as rank, person_id,country from table
+   Group by person_id,country
+   Order by person_id desc;
+===================================================================================================================================
+--b.Show the number of people who are older than the average in their corresponding country  
+SELECT * FROM (select age,country,person_id,gender,
+               avg(age) over (partition by country) as avg_for_country
+          from table) WHERE age > avg_for_country;
+--------------------------------- OR ---------------------------------------------------------------
+with temp(avgs) as
+  (select avg(age) over(partition by country) from table)
+  select count(*) as number_of_people from temp,table
+  where table.age > temp.avgs;
+=================================================================================================================================
+--c.Show the revenue at which 75% of the total population falls below
+
+SELECT MAX(revenue) from (select * from table where rownum <= (select FLOOR(0.75*count(*)) from table ORDER BY revenue));
+-------------------OR --------------------------------------------------------------------------------------------------------------------------------
+select t.range as revenue_range, count(*) as number_of_occurences
+from (
+  select FLOOR(revenue/10) as range
+  from table) t
+group by t.range;
+
+=============================================================================================================================
+2.Assuming that you received the table from #1 each month, what are the steps that you would take if there was a large change in revenue from one month to the next and you wanted to understand what was causing it. 
+
+- First of all, i will examine the variable/factors that lead to the sudden change in revenue growth.
+-the following causes that contribute the abrupt change in revenue.
+-total revenue will rise due to an increase in quantity if the percentage increase in quantity is larger than the percentage decrease in price.
+-And another causes could be increasing the number of customers, increasing average transaction size, increasing the frequency of transactions per customer, and raising your prices.
+
+-in order to overcome this problem following steps could alleviate at some extent.
+- Analyzing and assesing the factors that contribute the sudden large change in revenue.
+-navigate and review online presence
+-we can also tackel this problem by checking correlation between the variables/factors that provided in the table.
+-Focussing and asses the data that changes over period of time.
+================================================================================================================================================================
+
+3.Please explain your favorite thing about your current or a previous position – what do/did you like most about it?
+I loved the outstanding level of collaboration at my last role. It was genuinely refreshing to be part of a team that worked harmoniously towards the same goal. Our manager also encouraged us to come forward with ideas. Even if he disagreed with them, he never made anyone feel embarrassed for coming up with something. The team supported one another, and if someone was having problems, they didn’t hesitate to reach out and look for help because they knew a colleague was always willing to assist.
+One of the most important things for me is to enjoy a good work-life balance. By doing so, I find that I retain the energy and passion I need to perform to a high standard at work. My last job was fantastic because it gave me the freedom and control that I needed. Like this role, my last one enabled me to work on a flexible schedule. My manager trusted me to complete my tasks on time and to the requisite standard, and I didn’t let him down. With my last role, I generally woke up with a smile on my face, ready to give my all.
+
+=================================================================================================
+4.As you think about your career, what are the things that you’d like to achieve over the next 5-7 years?  
+In five years, I see myself as a successful, and learning new skills that will benefit the company and help me achieve my career goals. I am eager to experience new challenges and excited to invest five years’ time specializing in a career I find extremely interesting and motivating.
+" i would be more experienced not in skill set but in mindset. Because, i believe literally anybody can learn the skills through online or books. But, professional experiences, new ideologies, mature mindset, proper behavior, work under pressure, handling deadlines, dealing complex situations, there are plenty of thing i would be more experienced in by meeting people, listening, observing them, and finally make me mentally strong enough to stand amid the adversities."
+
+========================================================================================================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
